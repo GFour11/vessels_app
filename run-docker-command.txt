@@ -1,0 +1,5 @@
+RUN COMMAND FOR DOCKER
+docker run -it --rm --ipc=host --user pwuser --security-opt seccomp=seccomp_profile.json -p 8000:8000 my-fastapi-app
+
+
+important!!!! in db after postgresql ADD "+asyncpg"

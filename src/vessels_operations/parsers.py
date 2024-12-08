@@ -11,7 +11,7 @@ async def parse_from_mmsi(mmsi_number):
     url = f"https://www.vesselfinder.com/vessels/details/{mmsi_number}"
 
     result_dct={"Name": None, "MMSI": None, "IMO": None, "Country-ISO": None,
-            "Country-name": None, "Type": None, "Type-specific": None,
+            "Country": None, "Type": None, "Type-specific": None,
             "Navigational-status": None, "Callsign": None, "Gross-tonnage": None,
             "TEU": None, "Length": None, "Beam": None, "Year-of-built": None, "Current-draught": None, "Gas m3":None,
             "ENI": None, "Image": None}
@@ -38,7 +38,7 @@ async def parse_from_mmsi(mmsi_number):
                     except Exception:
                         pass
                     country_name = soup.find('div', class_='title-flag-icon').get('title')
-                    result_dct.update({"Country-name": country_name})
+                    result_dct.update({"Country": country_name})
                     ship_name = soup.find('h1', class_='title').text
                     result_dct.update({"Name": ship_name})
                     type_and_imo = soup.find('h2', class_='vst').text
@@ -88,7 +88,7 @@ async def parse_from_mmsi(mmsi_number):
                         type_ship = type_ship[2].text.strip()
                         result_dct.update({"Type":type_ship})
                     try:
-                        iso_format = pycountry.countries.get(name=result_dct.get("Country-name"))
+                        iso_format = pycountry.countries.get(name=result_dct.get("Country"))
                         result_dct.update({"Country-ISO": iso_format.alpha_2})
                     except:
                         pass
