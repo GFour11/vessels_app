@@ -7,6 +7,12 @@ from src.vessels_operations.playwright_parser import parse_map_async
 
 
 async def get_or_create_vessel(imo_or_mmsi: str, db: AsyncSession) -> Vessel:
+    """Check database for load data about current ship. If not data used two parsers for get info about ship.
+    params:
+    imo_or_mmsi: str, IMO or MMSI number of ship.
+    db: db session
+
+    Return JSON database."""
     result = await db.execute(select(Vessel).where(Vessel.imo == imo_or_mmsi))
     vessel = result.scalars().first()
     result2 = await db.execute(select(Vessel).where(Vessel.mmsi == imo_or_mmsi))
@@ -25,11 +31,8 @@ async def get_or_create_vessel(imo_or_mmsi: str, db: AsyncSession) -> Vessel:
         if detail:
             data_global = parse_global_ship_info.get('detail')
             dynamic_data = await parse_map_async('imo',detail)
-            print(dynamic_data)
             if type(dynamic_data.get('detail')) is dict:
                 dyn_data = dynamic_data.get('detail')
-                print(dyn_data)
-                print(f"----------{data_global}")
                 new_vessel = Vessel(name=data_global.get('Name'),
                                     mmsi=data_global.get('MMSI'),
                                     imo=data_global.get('IMO'),
@@ -45,9 +48,8 @@ async def get_or_create_vessel(imo_or_mmsi: str, db: AsyncSession) -> Vessel:
                                     beam = data_global.get('Beam'),
                                     year_of_built = data_global.get('Year-of-built'),
                                     current_draught = data_global.get('Current-draught'),
-                                    gas_m3=data_global.get('Current-draught'),
-                                    eni=data_global.get('Current-draught'),
-                                    image=data_global.get('Current-draught'),
+                                    eni=data_global.get('ENI'),
+                                    image=data_global.get('Image'),
                                     eta_utc=dyn_data.get('ETA_UTC'),
                                     draught = dyn_data.get('Draught'),
                                     deadweight = dyn_data.get('Deadweight'),
@@ -63,9 +65,6 @@ async def get_or_create_vessel(imo_or_mmsi: str, db: AsyncSession) -> Vessel:
                 db.add(new_vessel)
                 await db.commit()
                 await db.refresh(new_vessel)
-                print(f'here is return vessel:'
-                      '------------------------------------'
-                      f'{new_vessel}')
                 return new_vessel
         else:
             detail = parse_global_ship_info.get('detail').get("MMSI")
@@ -88,9 +87,8 @@ async def get_or_create_vessel(imo_or_mmsi: str, db: AsyncSession) -> Vessel:
                                     beam = data_global.get('Beam'),
                                     year_of_built = data_global.get('Year-of-built'),
                                     current_draught = data_global.get('Current-draught'),
-                                    gas_m3=data_global.get('Current-draught'),
-                                    eni=data_global.get('Current-draught'),
-                                    image=data_global.get('Current-draught'),
+                                    eni=data_global.get('ENI'),
+                                    image=data_global.get('Image'),
                                     eta_utc=dyn_data.get('ETA_UTC'),
                                     draught = dyn_data.get('Draught'),
                                     deadweight = dyn_data.get('Deadweight'),
@@ -106,7 +104,4 @@ async def get_or_create_vessel(imo_or_mmsi: str, db: AsyncSession) -> Vessel:
                 db.add(new_vessel)
                 await db.commit()
                 await db.refresh(new_vessel)
-                print(f'here is return vessel:'
-                      '------------------------------------'
-                      f'{new_vessel}')
                 return new_vessel

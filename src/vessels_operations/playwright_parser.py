@@ -3,9 +3,15 @@ import asyncio
 from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright
 
-async def parse_map_async(type,imo):
-    """Function to intercept current coordinates and travel data"""
-    url = f"https://www.vesselfinder.com/?{type}={imo}"
+async def parse_map_async(type_: str, imo: str) -> dict:
+    """Function to intercept current coordinates and travel data.
+    params:
+    type_ = str, imo or mmsi,
+    imo = str, number of imo or mmsi
+
+    Return data in dict."""
+
+    url = f"https://www.vesselfinder.com/?{type_}={imo}"
     result_dct = {"ETA_UTC": None, "Draught": None, "Deadweight": None, "Speed": None, "ATD_UTC": None,
                   "Latitude": None, "Longitude": None, "Course": None, "Destination": None, "Last-Port": None}
 

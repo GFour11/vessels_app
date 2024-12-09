@@ -4,14 +4,16 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from src.database.db import engine
 
+
 Base = declarative_base()
 
 
 class Vessel(Base):
+    """Base model for vessels."""
     __tablename__ = "vessel"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False, unique=True)
+    name = Column(String, nullable=True)
     mmsi = Column(String, nullable=False, unique=True)
     imo = Column(String, nullable=False, unique=True)
     country_iso = Column(String, default= None)
@@ -27,7 +29,6 @@ class Vessel(Base):
     beam = Column(String, default= None)
     year_of_built = Column(String, default= None)
     current_draught = Column(String, default= None)
-    gas_m3 = Column(String, default= None)
     eni = Column(String, default= None)
     eta_utc = Column(String, default= None)
     draught = Column(String, default= None)

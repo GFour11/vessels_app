@@ -4,16 +4,20 @@ import pycountry
 from bs4 import BeautifulSoup
 
 
-async def parse_from_mmsi(mmsi_number):
+async def parse_from_mmsi(mmsi_number: str) -> dict:
     """Basic function for initial parsing of ship information.
-     Used only when this information is not available in the database."""
+     Used only when this information is not available in the database.
+     params:
+     mmsi_number = str, number of ship mmsi.
+
+     Return data in dict."""
 
     url = f"https://www.vesselfinder.com/vessels/details/{mmsi_number}"
 
     result_dct={"Name": None, "MMSI": None, "IMO": None, "Country-ISO": None,
             "Country": None, "Type": None, "Type-specific": None,
             "Navigational-status": None, "Callsign": None, "Gross-tonnage": None,
-            "TEU": None, "Length": None, "Beam": None, "Year-of-built": None, "Current-draught": None, "Gas m3":None,
+            "TEU": None, "Length": None, "Beam": None, "Year-of-built": None, "Current-draught": None,
             "ENI": None, "Image": None}
 
     headers = {
